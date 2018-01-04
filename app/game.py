@@ -10,6 +10,7 @@ class Game:
         self._running = True
         self._view = None
         self._model = None
+        self._clock = None
 
     def on_init(self):
         self._view = PyGameView(self)
@@ -22,9 +23,9 @@ class Game:
         if event == KeyboardEvent.ESCAPE:
             self._running = False
         if event == KeyboardEvent.LEFT:
-            self._model.player.go_left()
+            self._model.player.turn_left()
         if event == KeyboardEvent.RIGHT:
-            self._model.player.go_right()
+            self._model.player.turn_right()
 
     def update_model(self):
         self._model.update()
@@ -45,6 +46,6 @@ class Game:
             self.update_model()
             self.on_render()
             self._view.process_input()
-            self._clock.tick(60)
+            self._clock.tick(30)
         self.on_cleanup()
 

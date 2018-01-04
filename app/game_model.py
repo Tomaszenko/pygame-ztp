@@ -6,4 +6,4 @@ class GameModel:
         self.player = Player()
 
     def update(self):
-        pass
+        self.player.update()
