@@ -16,25 +16,69 @@ class PyGameView(GameView):
         self._manager = manager
         self._texture_manager = TextureManager()
 
-        self._images = self._texture_manager.load_images()
-        self._spritesheets = self._texture_manager.load_sprites()
-
-        self._frog_series = self._spritesheets["frog"]
-        self._life_img = self._images["life"]
-        self._bomb_img = self._images["bomb"]
-        self._saw_img = self._images["saw"]
-        self._star_img = self._images["star"]
-        self._block_img = self._images["block"]
+        self._images = self.load_base_images()
+        self._spritesheets = self.load_base_sprites()
 
         self._player_state = 0
 
-        self._floor_level = self._block_img.get_rect().height
+        self._floor_level = self._images["block"].get_rect().height
 
         self._prev_locations = {}
 
+    def load_base_images(self):
+        return self._texture_manager.load_images()
+
+    def load_base_sprites(self):
+        return self._texture_manager.load_sprites()
+
+    def get_image_for_player_object(self, player_object):
+        image = self.find_player_image(player_object)
+
+        rect_in_memory = image.get_rect().width, image.get_rect().height
+        rect_needed = self.calculate_pixel_size(player_object)
+
+        if rect_in_memory[0] != rect_needed[0] or rect_in_memory[1] != rect_needed[1]:
+            new_image = pygame.transform.scale(image, (rect_needed[0], rect_needed[1]))
+            self._spritesheets[self._player_state] = new_image
+            return new_image
+        else:
+            return image
+
+    def get_image_for_object(self, game_object):
+        image = self.find_object_image(object=game_object)
+
+        rect_in_memory = image.get_rect().width, image.get_rect().height
+        rect_needed = self.calculate_pixel_size(game_object)
+
+        if rect_in_memory[0] != rect_needed[0] or rect_in_memory[1] != rect_needed[1]:
+            new_image = pygame.transform.scale(image, (rect_needed[0], rect_needed[1]))
+            self._spritesheets[self._player_state] = new_image
+            return new_image
+        else:
+            return image
+
+    def find_object_image(self, object):
+        object_name = object.name()
+        return self._images[object_name]
+
+    def find_player_image(self, player):
+        return self._spritesheets["frog"][self._player_state]
+
+    def calculate_pixel_position(self, game_object):
+        pixel_x = game_object.x * self.width
+        pixel_y = (1 - game_object.y - game_object.height) * self.height - self._floor_level
+
+        return pixel_x, pixel_y
+
+    def calculate_pixel_size(self, game_object):
+        pixel_width = int(game_object.width * self.width)
+        pixel_height = int(game_object.height * self.height)
+
+        return pixel_width, pixel_height
+
     def initialize(self):
         super().initialize()
-        self._render_floor(self._block_img)
+        self._render_floor(self._images["block"])
 
     def update(self, model, state):
         self.render(model)
@@ -47,12 +91,14 @@ class PyGameView(GameView):
         pass
 
     def render(self, model):
-        self._render_player(model.player, self._frog_series[self._player_state])
-        self._player_state += 1
-        if self._player_state > 4:
-            self._player_state = 0
+        self._render_player(model.player)
+        self._player_state -= 1
+        if self._player_state < 0:
+            self._player_state = 4
 
-    def _render_player(self, player, image):
+    def _render_player(self, player):
+        image = self.get_image_for_player_object(player)
+
         img_width = image.get_rect().width
         img_height = image.get_rect().height
 
@@ -64,10 +110,15 @@ class PyGameView(GameView):
                                                                            img_width, img_height])
             rects_to_update.append(rect_erased)
 
-        y_pos = self.height - self._floor_level - image.get_rect().height
-        x_pos = player.x
+        x_pos, y_pos = self.calculate_pixel_position(player)
+        print("x=" + str(x_pos))
+        print("y=" + str(y_pos))
 
-        rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))
+        if player.direction == "left":
+            rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))
+        else:
+            rect_drawn = self._display_surf.blit(pygame.transform.flip(image, True, False), (x_pos, y_pos))
+
         rects_to_update.append(rect_drawn)
 
         if player.id not in self._prev_locations:

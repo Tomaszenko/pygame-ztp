@@ -26,6 +26,8 @@ class Game:
             self._model.player.turn_left()
         if event == KeyboardEvent.RIGHT:
             self._model.player.turn_right()
+        if event == KeyboardEvent.UP:
+            self._model.player.jump()
 
     def update_model(self):
         self._model.update()
@@ -46,6 +48,6 @@ class Game:
             self.update_model()
             self.on_render()
             self._view.process_input()
-            self._clock.tick(30)
+            self._clock.tick(60)
         self.on_cleanup()
 
