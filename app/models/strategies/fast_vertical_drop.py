@@ -1,7 +1,7 @@
 from app.models.strategies import MovementBehaviour
 
 
-class SlowHorizontalRandomMovement(MovementBehaviour):
+class FastVerticalDrop(MovementBehaviour):
     def __init__(self):
         super().__init__()
 
