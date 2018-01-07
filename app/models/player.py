@@ -19,7 +19,7 @@ class Player(GameObject):
 
         if self.__jumping is True:
             self.y += self.__vy
-            self.__vy -= 0.01
+            self.__vy -= 0.005
             if self.y <= 0:
                 self.y = 0
                 self.__jumping = False
@@ -33,7 +33,7 @@ class Player(GameObject):
     def jump(self):
         if not self.__jumping:
             self.__jumping = True
-            self.__vy = 0.05
+            self.__vy = 0.04
 
     def go_left(self):
         self.x -= 0.01

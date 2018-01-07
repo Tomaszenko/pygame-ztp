@@ -45,7 +45,7 @@ class PyGameView(GameView):
             return image
 
     def get_image_for_object(self, game_object):
-        image = self.find_object_image(object=game_object)
+        image = self.find_object_image(game_object=game_object)
 
         rect_in_memory = image.get_rect().width, image.get_rect().height
         rect_needed = self.calculate_pixel_size(game_object)
@@ -57,8 +57,8 @@ class PyGameView(GameView):
         else:
             return image
 
-    def find_object_image(self, object):
-        object_name = object.name()
+    def find_object_image(self, game_object):
+        object_name = game_object.get_name()
         return self._images[object_name]
 
     def find_player_image(self, player):
@@ -92,6 +92,10 @@ class PyGameView(GameView):
 
     def render(self, model):
         self._render_player(model.player)
+
+        for modifier_object in model.modifier_objects:
+            self._render_object(modifier_object=modifier_object)
+
         self._player_state -= 1
         if self._player_state < 0:
             self._player_state = 4
@@ -129,8 +133,35 @@ class PyGameView(GameView):
 
         pygame.display.update(rects_to_update)
 
-    def _render_object(self):
-        pass
+    def _render_object(self, modifier_object):
+        image = self.get_image_for_object(modifier_object)
+
+        img_width = image.get_rect().width
+        img_height = image.get_rect().height
+
+        rects_to_update = []
+
+        if modifier_object.id in self._prev_locations:
+            rect_erased = pygame.draw.rect(self._display_surf, (0, 0, 0), [self._prev_locations[modifier_object.id][0],
+                                                                           self._prev_locations[modifier_object.id][1],
+                                                                           img_width, img_height])
+            rects_to_update.append(rect_erased)
+
+        x_pos, y_pos = self.calculate_pixel_position(modifier_object)
+        print("x=" + str(x_pos))
+        print("y=" + str(y_pos))
+
+        rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))
+
+        rects_to_update.append(rect_drawn)
+
+        if modifier_object.id not in self._prev_locations:
+            self._prev_locations[modifier_object.id] = [x_pos, y_pos]
+        else:
+            self._prev_locations[modifier_object.id][0] = x_pos
+            self._prev_locations[modifier_object.id][1] = y_pos
+
+        pygame.display.update(rects_to_update)
 
     def _render_floor(self, image):
         img_width = image.get_rect().width

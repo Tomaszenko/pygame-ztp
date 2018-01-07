@@ -30,7 +30,7 @@ class Game:
             self._model.player.jump()
 
     def update_model(self):
-        self._model.update()
+        self._model.update(new_object_probability=0.005)
 
     def on_render(self):
         self._view.update(self._model, None)
