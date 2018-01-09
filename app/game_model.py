@@ -1,4 +1,4 @@
-from app.models import Bomb, Player, Life, Saw, Star
+from app.models import Bomb, Player, Life, Saw, Star, BiggerObject
 from app.models.strategies import SlowVerticalDrop, FastVerticalDrop, FastHorizontalRandomMovement
 from random import random, randint
 
@@ -14,18 +14,36 @@ class GameModel:
     def update(self, new_object_probability):
         if random() < new_object_probability:
             new_object_type = self.object_types[randint(0, 3)]
+            is_decorated = False
+
+            if random() > 0.8:
+                is_decorated = True
+
+            new_object = None
+
             if new_object_type == "bomb":
-                self.modifier_objects.append(Bomb(x_pos=random()*(1-self.ref_width), width=self.ref_width,
-                                                  height=self.ref_height, strategy=SlowVerticalDrop()))
+                new_object = Bomb(x_pos=random()*(1-self.ref_width), width=self.ref_width,
+                                  height=self.ref_height, strategy=SlowVerticalDrop())
             if new_object_type == "life":
-                self.modifier_objects.append(Life(x_pos=random()*(1-self.ref_width), width=self.ref_width,
-                                                  height=self.ref_height, strategy=FastVerticalDrop()))
+                new_object = Life(x_pos=random()*(1-self.ref_width), width=self.ref_width,
+                                  height=self.ref_height, strategy=FastVerticalDrop())
             if new_object_type == "saw":
-                self.modifier_objects.append(Saw(x_pos=random()*(1-self.ref_width), width=self.ref_width,
-                                                  height=self.ref_height, strategy=FastHorizontalRandomMovement()))
+                new_object = Saw(x_pos=random()*(1-self.ref_width), width=self.ref_width,
+                                 height=self.ref_height, strategy=FastHorizontalRandomMovement())
             if new_object_type == "star":
-                self.modifier_objects.append(Star(x_pos=random()*(1-self.ref_width), width=self.ref_width,
-                                                  height=self.ref_height, strategy=SlowVerticalDrop()))
+                new_object = Star(x_pos=random()*(1-self.ref_width), width=self.ref_width,
+                                  height=self.ref_height, strategy=SlowVerticalDrop())
+            print("new_object=" + new_object.get_name())
+
+            if random() > 0.5:
+                modified_object = BiggerObject(new_object, 2)
+                self.modifier_objects.append(modified_object)
+            else:
+                self.modifier_objects.append(new_object)
+
+            print(self.modifier_objects[len(self.modifier_objects) - 1])
+
+            print("Name after adding: " + self.modifier_objects[len(self.modifier_objects) - 1].get_name())
 
         for modifier_object in self.modifier_objects:
             modifier_object.move()
@@ -49,7 +67,3 @@ class GameModel:
 
     def on_object_destroy(self, object_id):
         pass
-
-
-
-
