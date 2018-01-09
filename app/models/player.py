@@ -43,8 +43,8 @@ class Player(GameObject):
 
     def go_right(self):
         self.x += 0.01
-        self.x = min(self.x, 1 - self.width)
-        if self.x >= 1-self.width:
+        self.x = min(self.x, 1 - self._width)
+        if self.x >= 1-self._width:
             self.bounce_of_the_wall()
 
     def bounce_of_the_wall(self):

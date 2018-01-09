@@ -16,6 +16,10 @@ class ModifierObject(GameObject, ABC):
     def on_destroy(self):
         pass
 
+    @property
+    def strategy(self):
+        return self.__move_strategy
+
     @abstractmethod
     def get_name(self):
         pass

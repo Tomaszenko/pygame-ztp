@@ -59,20 +59,24 @@ class PyGameView(GameView):
 
     def find_object_image(self, game_object):
         object_name = game_object.get_name()
+        print(object_name)
         return self._images[object_name]
 
     def find_player_image(self, player):
         return self._spritesheets["frog"][self._player_state]
 
     def calculate_pixel_position(self, game_object):
+        object_pixel_width, object_pixel_height = game_object.get_size()
         pixel_x = game_object.x * self.width
-        pixel_y = (1 - game_object.y - game_object.height) * self.height - self._floor_level
+        pixel_y = (1 - game_object.y - object_pixel_height) * self.height - self._floor_level
 
         return pixel_x, pixel_y
 
     def calculate_pixel_size(self, game_object):
-        pixel_width = int(game_object.width * self.width)
-        pixel_height = int(game_object.height * self.height)
+        game_object_width, game_object_height = game_object.get_size()
+
+        pixel_width = int(game_object_width * self.width)
+        pixel_height = int(game_object_height * self.height)
 
         return pixel_width, pixel_height
 
@@ -104,6 +108,7 @@ class PyGameView(GameView):
         self._render_player(model.player)
 
         for modifier_object in model.modifier_objects:
+            print("in loop: " + modifier_object.get_name())
             self._render_object(modifier_object=modifier_object)
 
         self._player_state -= 1
