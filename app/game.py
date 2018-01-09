@@ -11,6 +11,7 @@ class Game:
         self._view = None
         self._model = None
         self._clock = None
+        self._destroyed_objects = []
 
     def on_init(self):
         self._view = PyGameView(self)
@@ -32,8 +33,9 @@ class Game:
     def update_model(self):
         self._model.update(new_object_probability=0.005)
 
-    def on_render(self):
-        self._view.update(self._model, None)
+    def on_render(self, destroyed_objects=None):
+        print(destroyed_objects)
+        self._view.update(self._model, destroyed_objects)
 
     def on_cleanup(self):
         self._view.quit()
@@ -43,11 +45,11 @@ class Game:
             self._running = False
 
         while self._running:
-            # for event in pygame.event.get():
-            #     self.on_event(event)
             self.update_model()
-            self.on_render()
+            self._destroyed_objects = self._model.get_destroyed_objects()
+            self._model.remove_destroyed_objects()
+            self.on_render(self._destroyed_objects)
             self._view.process_input()
-            self._clock.tick(60)
+            self._clock.tick(30)
         self.on_cleanup()
 

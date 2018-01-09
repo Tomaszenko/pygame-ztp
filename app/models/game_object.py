@@ -10,6 +10,7 @@ class GameObject(ABC):
         self.height = height
         self.x = x_pos
         self.y = y_pos
+        self.destroyed = False
 
     def get_size(self):
         return self.width, self.height

@@ -10,7 +10,7 @@ class GameView(ABC):
         pass
 
     @abstractmethod
-    def update(self, model, state):
+    def update(self, model, destroyed_objects=None, state="game"):
         pass
 
     @abstractmethod

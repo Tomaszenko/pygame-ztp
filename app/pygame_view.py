@@ -80,7 +80,17 @@ class PyGameView(GameView):
         super().initialize()
         self._render_floor(self._images["block"])
 
-    def update(self, model, state):
+    def update(self, model, destroyed_objects=None, state="game"):
+        if destroyed_objects is not None:
+            rects_erased = []
+            for destroyed_object in destroyed_objects:
+                print("i'm clearing")
+                rect_erased = pygame.draw.rect(self._display_surf, (0, 0, 0), [self._prev_locations[destroyed_object.id][0],
+                                                                               self._prev_locations[destroyed_object.id][1],
+                                                                               self.calculate_pixel_size(destroyed_object)[0],
+                                                                               self.calculate_pixel_size(destroyed_object)[1]])
+                rects_erased.append(rect_erased)
+            pygame.display.update(rects_erased)
         self.render(model)
 
     def process_input(self):
