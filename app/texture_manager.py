@@ -24,11 +24,18 @@ class TextureManager:
                 "block": pygame.image.load("img/block.bmp")
             }
 
+            self.__background = {
+                "background": pygame.image.load("img/background.jpg")
+            }
+
         def sprites(self):
             return self.__base_sprites
 
         def images(self):
             return self.__base_images
+
+        def background(self):
+            return self.__background
 
     def __init__(self):
         if TextureManager.__instance is None:
@@ -43,3 +50,8 @@ class TextureManager:
         if self.__instance is None:
             raise Exception('texture manager has not been instantiated yet')
         return self.__instance.images()
+
+    def load_background(self):
+        if self.__instance is None:
+            raise Exception('texture manager has not been instantiated yet')
+        return self.__instance.background()
