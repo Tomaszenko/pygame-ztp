@@ -18,6 +18,7 @@ class PyGameView(GameView):
 
         self._images = self.load_base_images()
         self._spritesheets = self.load_base_sprites()
+        self._background = self.load_background()
 
         self._player_state = 0
 
@@ -30,6 +31,9 @@ class PyGameView(GameView):
 
     def load_base_sprites(self):
         return self._texture_manager.load_sprites()
+
+    def load_background(self):
+        return self._texture_manager.load_background()
 
     def get_image_for_player_object(self, player_object):
         image = self.find_player_image(player_object)
@@ -105,6 +109,8 @@ class PyGameView(GameView):
         pass
 
     def render(self, model):
+        #self._render_background()
+
         self._render_player(model.player)
 
         for modifier_object in model.modifier_objects:
@@ -178,14 +184,23 @@ class PyGameView(GameView):
 
         pygame.display.update(rects_to_update)
 
+    def _render_background(self):
+        background = self._background["background"]
+        main_surface = self._display_surf.blit(background, (0, 0))
+
+        rects_to_update = []
+        rects_to_update.append(main_surface)
+        pygame.display.update(rects_to_update)
+
+
     def _render_floor(self, image):
+        rects_to_update = []
+
         img_width = image.get_rect().width
         img_height = image.get_rect().height
 
         y_pos = self.height - image.get_rect().height
         x_pos = 0
-
-        rects_to_update = []
 
         while x_pos < self.width:
             rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))

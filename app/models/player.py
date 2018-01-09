@@ -19,7 +19,7 @@ class Player(GameObject):
 
         if self.__jumping is True:
             self.y += self.__vy
-            self.__vy -= 0.005
+            self.__vy -= 0.0075
             if self.y <= 0:
                 self.y = 0
                 self.__jumping = False
@@ -33,7 +33,7 @@ class Player(GameObject):
     def jump(self):
         if not self.__jumping:
             self.__jumping = True
-            self.__vy = 0.04
+            self.__vy = 0.06
 
     def go_left(self):
         self.x -= 0.01
@@ -52,6 +52,21 @@ class Player(GameObject):
             self.__direction = "right"
         else:
             self.__direction = "left"
+
+
+    def calculate_cut(a1, b1, a2, b2):
+        begin = max(a1, a2)
+        end = min(b1, b2)
+        return max(0, end - begin)
+
+    def check_collision(self, object):
+        a = calculate_cut(self.x, self.x + self.width, object.x, object.x + object.width)
+        b = calculate_cut(self.y - self.height, self.y, object.y - object.height, object.y)
+        area = a * b
+        if(area != 0):
+            return True
+        else:
+            return False
 
     @property
     def direction(self):
