@@ -16,6 +16,8 @@ class PyGameView(GameView):
         self._manager = manager
         self._texture_manager = TextureManager()
 
+        self._text_font = pygame.font.SysFont("monospace", 24)
+
         self._images = self.load_base_images()
         self._spritesheets = self.load_base_sprites()
         self._background = self.load_background()
@@ -93,11 +95,13 @@ class PyGameView(GameView):
             rects_erased = []
             for destroyed_object in destroyed_objects:
                 print("i'm clearing")
-                rect_erased = pygame.draw.rect(self._display_surf, (0, 0, 0), [self._prev_locations[destroyed_object.id][0],
-                                                                               self._prev_locations[destroyed_object.id][1],
-                                                                               self.calculate_pixel_size(destroyed_object)[0],
-                                                                               self.calculate_pixel_size(destroyed_object)[1]])
-                rects_erased.append(rect_erased)
+                if destroyed_object.id in self._prev_locations:
+                    rect_erased = pygame.draw.rect(self._display_surf, (0, 0, 0),
+                                                   [self._prev_locations[destroyed_object.id][0],
+                                                    self._prev_locations[destroyed_object.id][1],
+                                                    self.calculate_pixel_size(destroyed_object)[0],
+                                                    self.calculate_pixel_size(destroyed_object)[1]])
+                    rects_erased.append(rect_erased)
             pygame.display.update(rects_erased)
         self.render(model)
 
@@ -116,6 +120,8 @@ class PyGameView(GameView):
         for modifier_object in model.modifier_objects:
             print("in loop: " + modifier_object.get_name())
             self._render_object(modifier_object=modifier_object)
+
+        self._render_indicators(model.player.health_points, model.player.score)
 
         self._player_state -= 1
         if self._player_state < 0:
@@ -208,6 +214,25 @@ class PyGameView(GameView):
             x_pos += img_width
 
         pygame.display.update(rects_to_update)
+
+    def _render_indicators(self, m_health, m_points):
+        rects_to_update = [
+            self._render_health(m_health=m_health, x=480, y=5),
+            self._render_points(m_points=m_points, x=480, y=30)
+        ]
+        pygame.display.update(rects_to_update)
+
+    def _render_health(self, m_health, x, y):
+        self._display_surf.fill(pygame.Color("black"), (x, y, 110, 40))
+        health = self._text_font.render(str(m_health), 1, (128, 255, 0))
+        rect_drawn = self._display_surf.blit(health, (x, y))
+        return rect_drawn
+
+    def _render_points(self, m_points, x, y):
+        self._display_surf.fill(pygame.Color("black"), (x, y, 110, 40))
+        scored_points = self._text_font.render(str(m_points), 1, (128, 255, 0))
+        rect_drawn = self._display_surf.blit(scored_points, (x, y))
+        return rect_drawn
 
     def on_event(self, event):
         if event.type == pygame.QUIT:

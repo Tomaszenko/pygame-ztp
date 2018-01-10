@@ -1,4 +1,4 @@
-from app.models import MutantObject
+from .mutant_object import MutantObject
 
 
 class BiggerObject(MutantObject):
@@ -7,8 +7,10 @@ class BiggerObject(MutantObject):
         self._how_many_bigger = how_many_bigger
 
     def get_size(self):
-        return self.width * self._how_many_bigger,\
-               self.height * self._how_many_bigger
+        return self._width * self._how_many_bigger, self._height * self._how_many_bigger
 
     def get_name(self):
         return super().get_name()
+
+    def on_player_collision(self):
+        return self._base_object.on_player_collision()

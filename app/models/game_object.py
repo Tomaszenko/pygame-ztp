@@ -15,14 +15,6 @@ class GameObject(ABC):
     def get_size(self):
         return self._width, self._height
 
-    @property
-    def width(self):
-        return self._width
-
-    @property
-    def height(self):
-        return self._height
-
     @abstractmethod
     def get_name(self):
         pass

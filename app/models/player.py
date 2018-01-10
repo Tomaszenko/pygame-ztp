@@ -8,6 +8,8 @@ class Player(GameObject):
         super().__init__(x_pos=0, y_pos=0, width=0.1, height=0.15)
         self.__jumping = False
         self.__vy = 0
+        self.__health_points = 100
+        self.__score = 0
         self.__direction = "right"
 
     def update(self):
@@ -53,24 +55,25 @@ class Player(GameObject):
         else:
             self.__direction = "left"
 
-
-    def calculate_cut(a1, b1, a2, b2):
-        begin = max(a1, a2)
-        end = min(b1, b2)
-        return max(0, end - begin)
-
-    def check_collision(self, object):
-        a = calculate_cut(self.x, self.x + self.width, object.x, object.x + object.width)
-        b = calculate_cut(self.y - self.height, self.y, object.y - object.height, object.y)
-        area = a * b
-        if(area != 0):
-            return True
-        else:
-            return False
-
     @property
     def direction(self):
         return self.__direction
+
+    @property
+    def health_points(self):
+        return self.__health_points
+
+    @health_points.setter
+    def health_points(self, value):
+        self.__health_points = value
+
+    @property
+    def score(self):
+        return self.__score
+
+    @score.setter
+    def score(self, value):
+        self.__score = value
 
     def get_name(self):
         return "player"

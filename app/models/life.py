@@ -1,4 +1,5 @@
 from app.models import ModifierObject
+from app.models.events import HealthBonus
 
 
 class Life(ModifierObject):
@@ -7,3 +8,6 @@ class Life(ModifierObject):
 
     def get_name(self):
         return "life"
+
+    def on_player_collision(self):
+        return HealthBonus()

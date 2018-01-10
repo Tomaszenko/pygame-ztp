@@ -1,4 +1,4 @@
-from app.models import MutantObject
+from .mutant_object import MutantObject
 
 
 class StrongerObject(MutantObject):

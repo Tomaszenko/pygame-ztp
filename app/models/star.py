@@ -1,4 +1,5 @@
 from app.models import ModifierObject
+from app.models.events import PointsBoost
 
 
 class Star(ModifierObject):
@@ -7,3 +8,6 @@ class Star(ModifierObject):
 
     def get_name(self):
         return "star"
+
+    def on_player_collision(self):
+        return PointsBoost()

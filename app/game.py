@@ -16,7 +16,7 @@ class Game:
     def on_init(self):
         self._view = PyGameView(self)
         self._view.initialize()
-        self._model = GameModel()
+        self._model = GameModel(self)
         self._running = True
         self._clock = pygame.time.Clock()
 
@@ -39,6 +39,9 @@ class Game:
 
     def on_cleanup(self):
         self._view.quit()
+
+    def on_player_kaputt(self):
+        self._running = False
 
     def run(self):
         if self.on_init() is False:

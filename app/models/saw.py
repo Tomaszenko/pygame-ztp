@@ -1,4 +1,5 @@
 from app.models import ModifierObject
+from app.models.events import TexanMassacre
 
 
 class Saw(ModifierObject):
@@ -7,3 +8,6 @@ class Saw(ModifierObject):
 
     def get_name(self):
         return "saw"
+
+    def on_player_collision(self):
+        return TexanMassacre()

@@ -10,8 +10,6 @@ class ModifierObject(GameObject, ABC):
 
     def move(self):
         self.x, self.y = self.__move_strategy.get_new_location(self.x, self.y)
-        if self.x < 0-self.width or self.x > 1 or self.y < 0 or self.y > 1:
-            self.destroyed = True
 
     def on_destroy(self):
         pass
@@ -22,4 +20,8 @@ class ModifierObject(GameObject, ABC):
 
     @abstractmethod
     def get_name(self):
+        pass
+
+    @abstractmethod
+    def on_player_collision(self):
         pass
