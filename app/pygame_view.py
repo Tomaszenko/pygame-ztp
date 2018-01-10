@@ -65,7 +65,6 @@ class PyGameView(GameView):
 
     def find_object_image(self, game_object):
         object_name = game_object.get_name()
-        print(object_name)
         return self._images[object_name]
 
     def find_player_image(self, player):
@@ -94,7 +93,6 @@ class PyGameView(GameView):
         if destroyed_objects is not None:
             rects_erased = []
             for destroyed_object in destroyed_objects:
-                print("i'm clearing")
                 if destroyed_object.id in self._prev_locations:
                     rect_erased = pygame.draw.rect(self._display_surf, (0, 0, 0),
                                                    [self._prev_locations[destroyed_object.id][0],
@@ -113,21 +111,23 @@ class PyGameView(GameView):
         pass
 
     def render(self, model):
-        #self._render_background()
+        rects_to_update = []
 
-        self._render_player(model.player)
+        rects_to_update += self._redraw_player(model.player)
 
         for modifier_object in model.modifier_objects:
-            print("in loop: " + modifier_object.get_name())
-            self._render_object(modifier_object=modifier_object)
+            rects_to_update += self._redraw_object(modifier_object=modifier_object)
 
-        self._render_indicators(model.player.health_points, model.player.score)
+        rects_to_update += self._redraw_health(model.player.health_points, 0.6*self.width, 0.05*self.height)
+        rects_to_update += self._redraw_points(model.player.score, 0.6*self.width, 0.15*self.height)
+
+        pygame.display.update()
 
         self._player_state -= 1
         if self._player_state < 0:
             self._player_state = 4
 
-    def _render_player(self, player):
+    def _redraw_player(self, player):
         image = self.get_image_for_player_object(player)
 
         img_width = image.get_rect().width
@@ -142,8 +142,6 @@ class PyGameView(GameView):
             rects_to_update.append(rect_erased)
 
         x_pos, y_pos = self.calculate_pixel_position(player)
-        print("x=" + str(x_pos))
-        print("y=" + str(y_pos))
 
         if player.direction == "left":
             rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))
@@ -158,9 +156,9 @@ class PyGameView(GameView):
             self._prev_locations[player.id][0] = x_pos
             self._prev_locations[player.id][1] = y_pos
 
-        pygame.display.update(rects_to_update)
+        return rects_to_update
 
-    def _render_object(self, modifier_object):
+    def _redraw_object(self, modifier_object):
         image = self.get_image_for_object(modifier_object)
 
         img_width = image.get_rect().width
@@ -175,8 +173,6 @@ class PyGameView(GameView):
             rects_to_update.append(rect_erased)
 
         x_pos, y_pos = self.calculate_pixel_position(modifier_object)
-        print("x=" + str(x_pos))
-        print("y=" + str(y_pos))
 
         rect_drawn = self._display_surf.blit(image, (x_pos, y_pos))
 
@@ -188,22 +184,19 @@ class PyGameView(GameView):
             self._prev_locations[modifier_object.id][0] = x_pos
             self._prev_locations[modifier_object.id][1] = y_pos
 
-        pygame.display.update(rects_to_update)
+        return rects_to_update
 
     def _render_background(self):
         background = self._background["background"]
         main_surface = self._display_surf.blit(background, (0, 0))
 
-        rects_to_update = []
-        rects_to_update.append(main_surface)
+        rects_to_update = [main_surface]
         pygame.display.update(rects_to_update)
-
 
     def _render_floor(self, image):
         rects_to_update = []
 
         img_width = image.get_rect().width
-        img_height = image.get_rect().height
 
         y_pos = self.height - image.get_rect().height
         x_pos = 0
@@ -215,24 +208,17 @@ class PyGameView(GameView):
 
         pygame.display.update(rects_to_update)
 
-    def _render_indicators(self, m_health, m_points):
-        rects_to_update = [
-            self._render_health(m_health=m_health, x=480, y=5),
-            self._render_points(m_points=m_points, x=480, y=30)
-        ]
-        pygame.display.update(rects_to_update)
-
-    def _render_health(self, m_health, x, y):
-        self._display_surf.fill(pygame.Color("black"), (x, y, 110, 40))
-        health = self._text_font.render(str(m_health), 1, (128, 255, 0))
+    def _redraw_health(self, m_health, x, y):
+        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.4*self.width, 0.1*self.height))
+        health = self._text_font.render("ZDROWIE: " + str(m_health), 1, (128, 255, 0))
         rect_drawn = self._display_surf.blit(health, (x, y))
-        return rect_drawn
+        return [rect_erased, rect_drawn]
 
-    def _render_points(self, m_points, x, y):
-        self._display_surf.fill(pygame.Color("black"), (x, y, 110, 40))
-        scored_points = self._text_font.render(str(m_points), 1, (128, 255, 0))
+    def _redraw_points(self, m_points, x, y):
+        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.4*self.width, 0.1*self.height))
+        scored_points = self._text_font.render("PUNKTY: " + str(m_points), 1, (128, 255, 0))
         rect_drawn = self._display_surf.blit(scored_points, (x, y))
-        return rect_drawn
+        return [rect_erased, rect_drawn]
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
