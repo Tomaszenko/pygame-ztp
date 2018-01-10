@@ -9,7 +9,7 @@ class PyGameView(GameView):
     def __init__(self, manager):
         super(GameView, self).__init__()
         pygame.init()
-        self.size = self.width, self.height = 640, 400
+        self.size = self.width, self.height = 1024, 768
         self._display_surf = pygame.display.set_mode(self.size, pygame.HWSURFACE | pygame.DOUBLEBUF)
         pygame.display.set_caption('Le Froż')
 
@@ -118,8 +118,8 @@ class PyGameView(GameView):
         for modifier_object in model.modifier_objects:
             rects_to_update += self._redraw_object(modifier_object=modifier_object)
 
-        rects_to_update += self._redraw_health(model.player.health_points, 0.6*self.width, 0.05*self.height)
-        rects_to_update += self._redraw_points(model.player.score, 0.6*self.width, 0.15*self.height)
+        rects_to_update += self._redraw_health(model.player.health_points, 0.75*self.width, 0.05*self.height)
+        rects_to_update += self._redraw_points(model.player.score, 0.75*self.width, 0.15*self.height)
 
         pygame.display.update()
 
@@ -209,13 +209,13 @@ class PyGameView(GameView):
         pygame.display.update(rects_to_update)
 
     def _redraw_health(self, m_health, x, y):
-        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.4*self.width, 0.1*self.height))
+        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.2*self.width, 0.1*self.height))
         health = self._text_font.render("ZDROWIE: " + str(m_health), 1, (128, 255, 0))
         rect_drawn = self._display_surf.blit(health, (x, y))
         return [rect_erased, rect_drawn]
 
     def _redraw_points(self, m_points, x, y):
-        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.4*self.width, 0.1*self.height))
+        rect_erased = self._display_surf.fill(pygame.Color("black"), (x, y, 0.2*self.width, 0.1*self.height))
         scored_points = self._text_font.render("PUNKTY: " + str(m_points), 1, (128, 255, 0))
         rect_drawn = self._display_surf.blit(scored_points, (x, y))
         return [rect_erased, rect_drawn]

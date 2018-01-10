@@ -6,5 +6,5 @@ class MovementBehaviour(ABC):
         pass
 
     @abstractmethod
-    def get_new_location(self, current_x, current_y):
+    def get_new_location(self, game_object_location, player_object_location, initial_object_location):
         pass

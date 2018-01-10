@@ -1,5 +1,7 @@
+from app.helper import Point
 from app.models import Bomb, Player, Life, Saw, Star
-from app.models.strategies import SlowVerticalDrop, FastVerticalDrop, FastHorizontalRandomMovement
+from app.models.strategies import SlowVerticalDrop, FastVerticalDrop, FastHorizontalRandomMovement, AggressiveBehaviour, \
+    ArcDrop, ChasingBehaviour
 from app.models.decorators import BiggerObject, StrongerObject
 
 from app.utils import CollisionUtils
@@ -11,8 +13,8 @@ class GameModel:
     def __init__(self, controller):
         self.__controller = controller
         self.player = Player()
-        self.ref_height = 0.15
-        self.ref_width = 0.1
+        self.ref_height = 0.1
+        self.ref_width = 0.08
         self.modifier_objects = []
         self.object_types = ["bomb", "life", "saw", "star"]
 
@@ -28,7 +30,7 @@ class GameModel:
             self.modifier_objects.append(new_object)
 
         for modifier_object in self.modifier_objects:
-            modifier_object.move()
+            modifier_object.move(self.player.get_location())
 
         self.player.update()
 
@@ -40,9 +42,6 @@ class GameModel:
 
                 modifier_object.destroyed = True
 
-                print("HEALTH: " + str(self.player.health_points))
-                print("SCORE: " + str(self.player.score))
-
                 if self.player.health_points <= 0:
                     self.__controller.on_player_kaputt()
 
@@ -53,16 +52,29 @@ class GameModel:
         new_object = None
 
         if object_type == "bomb":
-            new_object = Bomb(x_pos=random() * (1 - self.ref_width), width=self.ref_width,
-                              height=self.ref_height, strategy=SlowVerticalDrop())
+            x_pos, y_pos = None, None
+            random_number = random()
+            if random_number < 0.25:
+                x_pos, y_pos = (0 + random() * 0.2, 1)
+            else:
+                if random_number < 0.5:
+                    x_pos, y_pos = (0, 1 - random() * 0.2)
+                else:
+                    if random_number < 0.75:
+                        x_pos, y_pos = (1 - self.ref_width - random() * 0.2, 1)
+                    else:
+                        x_pos, y_pos = (1 - self.ref_width, 1 - random() * 0.2)
+
+            new_object = Bomb(location=Point(x_pos, y_pos), width=self.ref_width,
+                              height=self.ref_height, strategy=ArcDrop())
         if object_type == "life":
-            new_object = Life(x_pos=random() * (1 - self.ref_width), width=self.ref_width,
+            new_object = Life(location=Point(random() * (1 - self.ref_width), 1), width=self.ref_width,
                               height=self.ref_height, strategy=FastVerticalDrop())
         if object_type == "saw":
-            new_object = Saw(x_pos=random() * (1 - self.ref_width), width=self.ref_width,
-                             height=self.ref_height, strategy=FastHorizontalRandomMovement())
+            new_object = Saw(location=Point(0 if random() > 0.5 else 1 - self.ref_width, 0), width=self.ref_width,
+                             height=self.ref_height, strategy=ChasingBehaviour())
         if object_type == "star":
-            new_object = Star(x_pos=random() * (1 - self.ref_width), width=self.ref_width,
+            new_object = Star(location=Point(random() * (1 - self.ref_width), 1), width=self.ref_width,
                               height=self.ref_height, strategy=SlowVerticalDrop())
         return new_object
 
@@ -84,7 +96,6 @@ class GameModel:
         for modifier_object in self.modifier_objects:
             if modifier_object.destroyed:
                 objects_destroyed.append(modifier_object)
-        print("objects destroyed: " + str(len(objects_destroyed)))
         return objects_destroyed
 
     def on_object_destroy(self, object_id):
@@ -94,5 +105,3 @@ class GameModel:
         game_object_width, game_object_height = game_object.get_size()
         if game_object.x < 0 - game_object_width or game_object.x > 1 or game_object.y < 0 or game_object.y > 1:
             game_object.destroyed = True
-
-

@@ -1,11 +1,12 @@
 import uuid
 
+from app.helper import Point
 from app.models.game_object import GameObject
 
 
 class Player(GameObject):
     def __init__(self):
-        super().__init__(x_pos=0, y_pos=0, width=0.1, height=0.15)
+        super().__init__(location=Point(0, 0), width=0.1, height=0.15)
         self.__jumping = False
         self.__vy = 0
         self.__health_points = 100
@@ -35,16 +36,16 @@ class Player(GameObject):
     def jump(self):
         if not self.__jumping:
             self.__jumping = True
-            self.__vy = 0.06
+            self.__vy = 0.07
 
     def go_left(self):
-        self.x -= 0.01
+        self.x -= 0.015
         self.x = max(self.x, 0)
         if self.x <= 0:
             self.bounce_of_the_wall()
 
     def go_right(self):
-        self.x += 0.01
+        self.x += 0.015
         self.x = min(self.x, 1 - self._width)
         if self.x >= 1-self._width:
             self.bounce_of_the_wall()

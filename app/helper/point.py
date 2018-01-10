@@ -19,3 +19,8 @@ class Point:
     @y.setter
     def y(self, y):
         self.__y = y
+
+    def __str__(self) -> str:
+        return "({},{})".format(self.x, self.y)
+
+

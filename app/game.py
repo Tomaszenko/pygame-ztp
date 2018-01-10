@@ -12,6 +12,8 @@ class Game:
         self._model = None
         self._clock = None
         self._destroyed_objects = []
+        self._fps = 30
+        self._new_object_probability = 0.005
 
     def on_init(self):
         self._view = PyGameView(self)
@@ -31,7 +33,8 @@ class Game:
             self._model.player.jump()
 
     def update_model(self):
-        self._model.update(new_object_probability=0.005)
+        self._model.update(new_object_probability=self._new_object_probability + 0.001/self._fps)
+        new_object_probability = self._new_object_probability + 0.001 / self._fps
 
     def on_render(self, destroyed_objects=None):
         print(destroyed_objects)
@@ -53,6 +56,6 @@ class Game:
             self._model.remove_destroyed_objects()
             self.on_render(self._destroyed_objects)
             self._view.process_input()
-            self._clock.tick(30)
+            self._clock.tick(self._fps)
         self.on_cleanup()
 

@@ -1,15 +1,19 @@
+from app.helper import Point
 from app.models.game_object import GameObject
 from abc import ABC, abstractmethod
 
 
 class ModifierObject(GameObject, ABC):
 
-    def __init__(self, x_pos, y_pos, width, height, strategy):
-        super().__init__(x_pos=x_pos, y_pos=y_pos, width=width, height=height)
+    def __init__(self, location, width, height, strategy):
+        super().__init__(location=location, width=width, height=height)
         self.__move_strategy = strategy
+        self.__initial_location = location
 
-    def move(self):
-        self.x, self.y = self.__move_strategy.get_new_location(self.x, self.y)
+    def move(self, player_location):
+        self._location = self.__move_strategy.get_new_location(
+            self._location, player_location, self.__initial_location
+        )
 
     def on_destroy(self):
         pass
