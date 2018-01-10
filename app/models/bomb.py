@@ -10,5 +10,5 @@ class Bomb(ModifierObject):
     def get_name(self):
         return "bomb"
 
-    def on_player_collision(self):
-        return Explosion()
+    def on_player_collision(self, relative_impact=1):
+        return Explosion(relative_effect=relative_impact)

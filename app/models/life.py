@@ -9,5 +9,5 @@ class Life(ModifierObject):
     def get_name(self):
         return "life"
 
-    def on_player_collision(self):
-        return HealthBonus()
+    def on_player_collision(self, relative_impact=1):
+        return HealthBonus(relative_effect=relative_impact)

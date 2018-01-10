@@ -9,5 +9,5 @@ class Star(ModifierObject):
     def get_name(self):
         return "star"
 
-    def on_player_collision(self):
-        return PointsBoost()
+    def on_player_collision(self, relative_impact=1):
+        return PointsBoost(relative_effect=relative_impact)

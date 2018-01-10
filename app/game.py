@@ -34,7 +34,7 @@ class Game:
 
     def update_model(self):
         self._model.update(new_object_probability=self._new_object_probability + 0.001/self._fps)
-        new_object_probability = self._new_object_probability + 0.001 / self._fps
+        self._new_object_probability = self._new_object_probability + 0.001 / self._fps
 
     def on_render(self, destroyed_objects=None):
         print(destroyed_objects)

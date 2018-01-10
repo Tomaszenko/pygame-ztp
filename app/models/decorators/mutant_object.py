@@ -13,6 +13,3 @@ class MutantObject(ModifierObject, ABC):
 
     def get_name(self):
         return self._name
-
-    def on_player_collision(self):
-        return self._base_object.on_player_collision()

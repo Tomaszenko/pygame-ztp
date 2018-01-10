@@ -9,5 +9,5 @@ class Saw(ModifierObject):
     def get_name(self):
         return "saw"
 
-    def on_player_collision(self):
-        return TexanMassacre()
+    def on_player_collision(self, relative_impact=1):
+        return TexanMassacre(relative_effect=relative_impact)
