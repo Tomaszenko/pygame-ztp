@@ -1,5 +1,5 @@
+from app.events import PointsBoost
 from app.models import ModifierObject
-from app.models.events import PointsBoost
 
 
 class Star(ModifierObject):

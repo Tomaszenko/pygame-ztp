@@ -1,5 +1,5 @@
 from app.helper import Point
-from app.models.strategies import MovementBehaviour
+from app.strategies import MovementBehaviour
 
 
 class FastVerticalDrop(MovementBehaviour):

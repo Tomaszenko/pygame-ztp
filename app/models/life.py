@@ -1,5 +1,5 @@
+from app.events import HealthBonus
 from app.models import ModifierObject
-from app.models.events import HealthBonus
 
 
 class Life(ModifierObject):

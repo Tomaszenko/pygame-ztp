@@ -1,4 +1,4 @@
-from app.models.events.player_impact_event import PlayerImpactEvent
+from .player_impact_event import PlayerImpactEvent
 
 
 class TexanMassacre(PlayerImpactEvent):

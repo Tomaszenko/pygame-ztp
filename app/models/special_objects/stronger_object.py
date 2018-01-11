@@ -1,4 +1,3 @@
-from app.models.events import PlayerImpactEvent
 from .mutant_object import MutantObject
 
 

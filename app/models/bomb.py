@@ -1,6 +1,5 @@
-from app.helper import Point
+from app.events import Explosion
 from app.models import ModifierObject
-from app.models.events import Explosion
 
 
 class Bomb(ModifierObject):

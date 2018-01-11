@@ -1,5 +1,5 @@
+from app.events import TexanMassacre
 from app.models import ModifierObject
-from app.models.events import TexanMassacre
 
 
 class Saw(ModifierObject):

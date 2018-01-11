@@ -1,12 +1,10 @@
+from random import random, randint
+
 from app.helper import Point
 from app.models import Bomb, Player, Life, Saw, Star
-from app.models.strategies import SlowVerticalDrop, FastVerticalDrop, FastHorizontalRandomMovement, AggressiveBehaviour, \
-    ArcDrop, ChasingBehaviour
-from app.models.decorators import BiggerObject, StrongerObject
-
+from app.models.special_objects import BiggerObject, StrongerObject
+from app.strategies import SlowVerticalDrop, FastVerticalDrop, ArcDrop, ChasingBehaviour
 from app.utils import CollisionUtils
-
-from random import random, randint
 
 
 class GameModel:

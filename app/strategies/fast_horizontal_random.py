@@ -1,7 +1,7 @@
 from random import random
 
 from app.helper import Point
-from app.models.strategies import MovementBehaviour
+from app.strategies import MovementBehaviour
 
 
 class FastHorizontalRandomMovement(MovementBehaviour):
